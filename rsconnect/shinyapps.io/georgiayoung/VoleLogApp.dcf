@@ -1,0 +1,14 @@
+name: VoleLogApp
+title: VoleLogApp
+username:
+account: georgiayoung
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5703094
+bundleId: 5603441
+url: https://georgiayoung.shinyapps.io/VoleLogApp/
+when: 1645476546.40324
+lastSyncTime: 1645476546.40326
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: getting column rows.Rmd

@@ -1,0 +1,80 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r loadingdata}
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+pvolelog <- read.csv("/Users/georgiayoung/Desktop/Berkeley/pvolelogcsv.csv")
+```
+
+```{r cleaningdata}
+pvolelog$DOB <- mdy(pvolelog$DOB)
+pvolelog$Wean.On <-mdy(pvolelog$Wean.On)
+pvolelog$Date.Weaned <-mdy(pvolelog$Date.Weaned)
+pvolelog$Separate.By <-mdy(pvolelog$Separate.By)
+pvolelog$Actual.Separation.Date <-mdy(pvolelog$Actual.Separation.Date)
+```
+
+```{r separationwindow}
+
+```
+
+```{r }
+#filters dataset by date given and extracts pair names of those needed to be weaned that day
+#select rows where wean date is Dec 12, output pair
+ToWean <- pvolelog %>%
+  select(From.Pair, Wean.On) %>%
+  filter(Wean.On == "2022-02-21")
+
+
+#select rows where separate date is between 12/12 and 12/19, output pair
+ToSeparate <- pvolelog %>%
+  select(From.Pair, Separate.By, Wean.On) %>%
+#want it to show up if date picked is between date weaned and separate by 
+#if "date weaned" is within 7 days of the date
+  filter(Wean.On >= "2022-02-21")  %>%
+  filter(Separate.By <= "2022-02-28")
+ToWean
+ToSeparate
+
+```
+
+
+```{r}
+
+ToWean <- pvolelog %>%
+        select(From.Pair, Wean.On) %>%
+        filter(Wean.On == input$date) %>%
+        as.character(ToWean$From.Pair)
+
+```
+
+```{r}
+ToWean <- pvolelog %>%
+        select(From.Pair, Wean.On) %>%
+        filter(Wean.On == "2021-12-12") %>%
+  print("Wean:",str_c(ToWean$From.Pair, collapse = ","))
+
+ToWean
+```
+
+```{r}
+paste0("Wean:", str_c(ToWean$From.Pair, collapse = ","))
+paste0("Separate:", str_c(ToSeparate$From.Pair))
+
+
+```
+print(paste0("Separate:", print(ToSeparate$From.Pair)))
+
+```{r}
+#Find date of last litter
+LastLitter <- pvolelog %>%
+  select(DOB, From.Pair, Date.Weaned) %>%
+  group_by(From.Pair)
+#If >20 days since that litter appeared AND date.weaned filled out, then show as needing pupchecks
+
+```
