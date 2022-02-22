@@ -26,6 +26,7 @@ ui <- fluidPage(
     textOutput("blah"),
     textOutput("pressedbutton"),
     textOutput("separate"),
+    textOutput("pupcheck"),
     br(),
     br(),
     rHandsontableOutput("showdata"))
@@ -56,6 +57,22 @@ server = function(input, output) {
     renderedDataTable <- renderRHandsontable(rhandsontable(pvolelog))
     output$showdata <- renderedDataTable
 
+    #Getting individuals to pupcheck
+    
+    
+    output$pupcheck <- eventReactive(input$submit, {
+        LastLitter <- pvolelog %>%
+            select(DOB, From.Pair, Wean.On, Date.Weaned) %>%
+            group_by(From.Pair) %>%
+            filter(DOB == max(DOB))
+        
+        needscheck <- LastLitter %>%
+            filter(input$date >= (Wean.On+20))
+        
+        paste("Check for Pups:",str_c(needscheck$From.Pair, collapse = ", "))
+        
+    })
+    
     
     
     

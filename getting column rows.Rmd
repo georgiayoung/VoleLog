@@ -8,7 +8,8 @@ output: html_notebook
 library(tidyverse)
 library(dplyr)
 library(lubridate)
-pvolelog <- read.csv("/Users/georgiayoung/Desktop/Berkeley/pvolelogcsv.csv")
+urlfile = "https://raw.githubusercontent.com/georgiayoung/VoleLog/main/pvolelogcsv.csv"
+pvolelog <- read.csv(url(urlfile))
 ```
 
 ```{r cleaningdata}
@@ -74,7 +75,17 @@ print(paste0("Separate:", print(ToSeparate$From.Pair)))
 #Find date of last litter
 LastLitter <- pvolelog %>%
   select(DOB, From.Pair, Date.Weaned) %>%
-  group_by(From.Pair)
+  group_by(From.Pair) %>%
+  filter(DOB == max(DOB))
+
+LastLitter
+
 #If >20 days since that litter appeared AND date.weaned filled out, then show as needing pupchecks
 
+
+
+
+
 ```
+  slice_max(DOB) %>%
+  ungroup(DOB) %>%
