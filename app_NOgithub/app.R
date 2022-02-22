@@ -8,9 +8,8 @@ library(readr)
 library(rhandsontable)
 
 
-#LOADING DATA
-urlfile = "https://raw.githubusercontent.com/georgiayoung/VoleLog/main/pvolelogcsv.csv"
-pvolelog <- read.csv(url(urlfile))
+#LOADING DATA FROM LOCAL FILE
+pvolelog <- read.csv("~/VoleLog/pvolelogcsv.csv")
 
 pvolelog$DOB <- mdy(pvolelog$DOB)
 pvolelog$Wean.On <-mdy(pvolelog$Wean.On)
@@ -20,10 +19,10 @@ pvolelog$Actual.Separation.Date <-mdy(pvolelog$Actual.Separation.Date)
 
 #*MAKING APP*
 ui <- fluidPage(
-#Enter intials and date
+    #Enter intials and date
     dateInput("date","Date (mm-dd-yy)", format = "mm/dd/yy"),
     textInput("inputID", "Initials", placeholder = "ABC"),
-#See tasks
+    #See tasks
     br(),
     actionButton("submit", label = "See what's needed today"),
     br(),
@@ -32,8 +31,8 @@ ui <- fluidPage(
     textOutput("pressedbutton"),
     textOutput("separate"),
     textOutput("pupcheck"),
-
-#Show data log
+    
+    #Show data log
     br(),
     br(),
     rHandsontableOutput("showdata", height = "300px"))
@@ -60,20 +59,20 @@ server = function(input, output) {
             filter(input$date <= (Separate.By+days(7)))
         paste("Separate:",str_c(ToSeparate$From.Pair, collapse = ", "))
     })
-
     
     
-#Show Log
+    
+    #Show Log
     renderedDataTable <- renderRHandsontable(rhandsontable
                                              (pvolelog %>%
-                                                arrange(desc(DOB))) %>%
+                                                     arrange(desc(DOB))) %>%
                                                  hot_context_menu(allowRowEdit = TRUE, 
                                                                   allowColEdit = FALSE, 
                                                                   useTypes = FALSE) %>%
                                                  hot_col("From.Pair", type = "autocomplete"))
     output$showdata <- renderedDataTable
-
-#Getting individuals to pupcheck
+    
+#Getting pairs to pupcheck
     output$pupcheck <- eventReactive(input$submit, {
         LastLitter <- pvolelog %>%
             select(DOB, From.Pair, Wean.On, Date.Weaned) %>%
@@ -81,14 +80,15 @@ server = function(input, output) {
             filter(DOB == max(DOB))
         
         needscheck <- LastLitter %>%
-            filter(input$date >= (Wean.On+20))
-
+            filter(input$date >= (DOB+days(20))) %>%
+            filter(Date.Weaned == NA)
+        
         paste("Check for Pups:",str_c(needscheck$From.Pair, collapse = ", "))
-            
-    
+        
+        
     })
-
-#Add new litter after pupcheck
+    
+    #Add new litter after pupcheck
     
     
     
