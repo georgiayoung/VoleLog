@@ -29,7 +29,7 @@ ui <- fluidPage(
     textOutput("pupcheck"),
     br(),
     br(),
-    rHandsontableOutput("showdata"))
+    rHandsontableOutput("showdata", height = "300px"))
 
 
 server = function(input, output) {
@@ -54,7 +54,8 @@ server = function(input, output) {
         paste("Separate:",str_c(ToSeparate$From.Pair, collapse = ", "))
     })
     #Show Log
-    renderedDataTable <- renderRHandsontable(rhandsontable(pvolelog))
+    renderedDataTable <- renderRHandsontable(rhandsontable(pvolelog %>%
+                                                           arrange(desc(DOB))))
     output$showdata <- renderedDataTable
 
     #Getting individuals to pupcheck
@@ -68,9 +69,10 @@ server = function(input, output) {
         
         needscheck <- LastLitter %>%
             filter(input$date >= (Wean.On+20))
-        
+
         paste("Check for Pups:",str_c(needscheck$From.Pair, collapse = ", "))
-        
+            
+    
     })
     
     

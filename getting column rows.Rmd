@@ -82,7 +82,9 @@ LastLitter
 
 #If >20 days since that litter appeared AND date.weaned filled out, then show as needing pupchecks
 
+```
 
+```{r}
 
 
 
