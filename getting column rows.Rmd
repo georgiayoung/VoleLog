@@ -85,7 +85,11 @@ LastLitter
 ```
 
 ```{r}
-
+#Add new litters to dataset 
+    actionButton("NewLitter", label = "Add a new litter"),
+    dateInput("DOB", label = "DOB"),
+    textInput("FromPair", label = "Pair"),
+    textInput("NumPup", label = "Number of Pups"),
 
 
 ```

@@ -19,14 +19,20 @@ pvolelog$Actual.Separation.Date <-mdy(pvolelog$Actual.Separation.Date)
 
 #*MAKING APP*
 ui <- fluidPage(
+#Enter intials and date
     dateInput("date","Date (mm-dd-yy)", format = "mm/dd/yy"),
     textInput("inputID", "Initials", placeholder = "ABC"),
+#See tasks
+    br(),
     actionButton("submit", label = "See what's needed today"),
+    br(),
     br(),
     textOutput("blah"),
     textOutput("pressedbutton"),
     textOutput("separate"),
     textOutput("pupcheck"),
+
+#Show data log
     br(),
     br(),
     rHandsontableOutput("showdata", height = "300px"))
@@ -53,14 +59,12 @@ server = function(input, output) {
             filter(input$date <= (Separate.By+days(7)))
         paste("Separate:",str_c(ToSeparate$From.Pair, collapse = ", "))
     })
-    #Show Log
+#Show Log
     renderedDataTable <- renderRHandsontable(rhandsontable(pvolelog %>%
                                                            arrange(desc(DOB))))
     output$showdata <- renderedDataTable
 
-    #Getting individuals to pupcheck
-    
-    
+#Getting individuals to pupcheck
     output$pupcheck <- eventReactive(input$submit, {
         LastLitter <- pvolelog %>%
             select(DOB, From.Pair, Wean.On, Date.Weaned) %>%
@@ -74,6 +78,8 @@ server = function(input, output) {
             
     
     })
+
+#Add new litter after pupcheck
     
     
     
