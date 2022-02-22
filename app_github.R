@@ -6,6 +6,7 @@ library(lubridate)
 library(rsconnect)
 library(readr)
 library(rhandsontable)
+library(DataEditR)
 
 #LOADING DATA
 urlfile = "https://raw.githubusercontent.com/georgiayoung/VoleLog/main/pvolelogcsv.csv"
@@ -59,9 +60,17 @@ server = function(input, output) {
             filter(input$date <= (Separate.By+days(7)))
         paste("Separate:",str_c(ToSeparate$From.Pair, collapse = ", "))
     })
+
+    
+    
 #Show Log
-    renderedDataTable <- renderRHandsontable(rhandsontable(pvolelog %>%
-                                                           arrange(desc(DOB))))
+    renderedDataTable <- renderRHandsontable(rhandsontable
+                                             (pvolelog %>%
+                                                arrange(desc(DOB))) %>%
+                                                 hot_context_menu(allowRowEdit = TRUE, 
+                                                                  allowColEdit = FALSE, 
+                                                                  useTypes = FALSE) %>%
+                                                 hot_col("From.Pair", type = "autocomplete"))
     output$showdata <- renderedDataTable
 
 #Getting individuals to pupcheck
